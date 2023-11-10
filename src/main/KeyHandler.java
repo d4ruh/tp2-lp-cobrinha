@@ -6,6 +6,7 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements KeyListener {
 
     public boolean up_press = false, down_press = false, right_press = false, left_press = false;
+    public boolean jump_press = false;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -29,6 +30,9 @@ public class KeyHandler implements KeyListener {
         if (keyCode == KeyEvent.VK_D) {
             right_press = true;
         }
+        if (keyCode == KeyEvent.VK_SPACE) {
+            jump_press = true;
+        }
     }
 
     @Override
@@ -47,6 +51,9 @@ public class KeyHandler implements KeyListener {
         }
         if (keyCode == KeyEvent.VK_D) {
             right_press = false;
+        }
+        if (keyCode == KeyEvent.VK_SPACE) {
+            jump_press = false;
         }
     }
 }
