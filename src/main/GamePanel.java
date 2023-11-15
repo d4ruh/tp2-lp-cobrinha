@@ -15,7 +15,7 @@ public class GamePanel extends JPanel implements ActionListener {
     static final int SCREEN_HEIGHT = TILE_SIZE * QTD_PER_ROW;
     static final int TOTAL_GAME_TILES = SCREEN_HEIGHT * SCREEN_WIDTH / QTD_PER_ROW;
 
-    static final int DELAY = 75;
+    static final int DELAY = 150;
 
 
     int tamanhoCobra = 5;
@@ -55,19 +55,25 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void draw(Graphics g) {
-        for (int i = 0; i < QTD_PER_ROW; i++) {
-            g.drawLine(i*TILE_SIZE, 0, i*TILE_SIZE, SCREEN_HEIGHT);
-            g.drawLine(0, i*TILE_SIZE, SCREEN_WIDTH, i*TILE_SIZE);
+
+        if (running) {
+            for (int i = 0; i < QTD_PER_ROW; i++) {
+                g.drawLine(i * TILE_SIZE, 0, i * TILE_SIZE, SCREEN_HEIGHT);
+                g.drawLine(0, i * TILE_SIZE, SCREEN_WIDTH, i * TILE_SIZE);
+            }
+
+            g.setColor(Color.green);
+            g.fillOval(appleX, appleY, TILE_SIZE, TILE_SIZE);
+
+            for (int i = 0; i < tamanhoCobra; i++) {
+                if (i == 0) g.setColor(Color.red);
+                else g.setColor(Color.blue);
+
+                g.fillRect(posX[i], posY[i], TILE_SIZE, TILE_SIZE);
+            }
         }
-
-        g.setColor(Color.green);
-        g.fillOval(appleX, appleY, TILE_SIZE, TILE_SIZE);
-
-        for (int i = 0; i < tamanhoCobra; i++) {
-            if (i == 0) g.setColor(Color.red);
-            else        g.setColor(Color.blue);
-
-            g.fillRect(posX[i], posY[i], TILE_SIZE, TILE_SIZE);
+        else {
+            gameOver(g);
         }
     }
 
@@ -125,6 +131,16 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void gameOver(Graphics g) {
+        g.setColor(Color.red);
+        g.setFont(new Font("Ink Free", Font.BOLD, 75));
+        FontMetrics metrics01 = getFontMetrics(g.getFont());
+        g.drawString("Game Over!", ((SCREEN_WIDTH - metrics01.stringWidth("Game Over!"))/2), SCREEN_HEIGHT/2);
+
+        g.setFont(new Font("Ink Free", Font.BOLD, 50));
+        FontMetrics metrics02 = getFontMetrics(g.getFont());
+        g.drawString("Pontos: " + pontos, (SCREEN_WIDTH - metrics02.stringWidth("Pontos: " + pontos))/2,
+                (SCREEN_HEIGHT + 2 * metrics02.getHeight())/2);
+
 
     }
 
