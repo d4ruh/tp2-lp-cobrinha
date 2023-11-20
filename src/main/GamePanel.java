@@ -1,9 +1,11 @@
 package main;
 
+import entity.Apple;
+import entity.Player;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Random;
 
 public class GamePanel extends JPanel implements ActionListener {
 
@@ -24,25 +26,22 @@ public class GamePanel extends JPanel implements ActionListener {
     int direcao = 2;
     boolean running;
     int pontos = 0;
-    int appleX;
-    int appleY;
+    Apple apple = new Apple();
+    Player player = new Player();
 
     Timer timer;
-    Random rand;
 
 
     public GamePanel(){
-        rand = new Random();
-
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(Color.black);
         this.setFocusable(true);
-        this.addKeyListener(new MyKeyAdapter());
+        this.addKeyListener(new MyKeyAdapter(player));
         startGame();
     }
 
     public void startGame() {
-        newApple();
+        apple.newApple();
         running = true;
 
         timer = new Timer(DELAY, this);
@@ -63,71 +62,18 @@ public class GamePanel extends JPanel implements ActionListener {
             }
 
             g.setColor(Color.green);
-            g.fillOval(appleX, appleY, TILE_SIZE, TILE_SIZE);
+            g.fillOval(apple.x, apple.y, TILE_SIZE, TILE_SIZE);
 
-            for (int i = 0; i < tamanhoCobra; i++) {
+            for (int i = 0; i < player.tamanho; i++) {
                 if (i == 0) g.setColor(Color.red);
                 else g.setColor(Color.blue);
 
-                g.fillRect(posX[i], posY[i], TILE_SIZE, TILE_SIZE);
+                g.fillRect(player.posX[i], player.posY[i], TILE_SIZE, TILE_SIZE);
             }
         }
         else {
             gameOver(g);
         }
-    }
-
-    public void newApple() {
-        appleX = rand.nextInt( QTD_PER_ROW ) * TILE_SIZE;
-        appleY = rand.nextInt( QTD_PER_ROW ) * TILE_SIZE;
-    }
-
-    public void move() {
-        for (int i = tamanhoCobra; i > 0; i--) {
-            posX[i] = posX[i-1];
-            posY[i] = posY[i-1];
-        }
-
-        switch (direcao) {
-            case 1: //cima
-                posY[0] -= TILE_SIZE;
-                break;
-            case 2: //baixo
-                posY[0] += TILE_SIZE;
-                break;
-            case 3: //esquerda
-                posX[0] -= TILE_SIZE;
-                break;
-            case 4: //direita
-                posX[0] += TILE_SIZE;
-                break;
-        }
-    }
-
-    public void checkApple() {
-        if (posX[0] == appleX && posY[0] == appleY) {
-            tamanhoCobra++;
-            posX[tamanhoCobra-1] = posX[tamanhoCobra-2];
-            posY[tamanhoCobra-1] = posY[tamanhoCobra-2];
-
-            newApple();
-            pontos++;
-        }
-    }
-
-    public void checkColision() {
-        for (int i = tamanhoCobra; i > 0; i--) {
-            if (posX[0] == posX[i] && posY[0] == posY[i]) {
-                running = false;
-            }
-        }
-
-        if ( posX[0] < 0 || posX[0] > SCREEN_WIDTH ||
-             posY[0] < 0 || posY[0] > SCREEN_HEIGHT) {
-            running = false;
-        }
-
-        if (!running) timer.stop();
     }
 
     public void gameOver(Graphics g) {
@@ -138,59 +84,19 @@ public class GamePanel extends JPanel implements ActionListener {
 
         g.setFont(new Font("Ink Free", Font.BOLD, 50));
         FontMetrics metrics02 = getFontMetrics(g.getFont());
-        g.drawString("Pontos: " + pontos, (SCREEN_WIDTH - metrics02.stringWidth("Pontos: " + pontos))/2,
+        g.drawString("Pontos: " + player.pontos, (SCREEN_WIDTH - metrics02.stringWidth("Pontos: " + player.pontos))/2,
                 (SCREEN_HEIGHT + 2 * metrics02.getHeight())/2);
-
-
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
         if (running) {
-            move();
-            checkApple();
-            checkColision();
+            player.move();
+            player.checkApple(apple);
+            running = player.checkColision();
+            if (!running)   timer.stop();
         }
         repaint();
-    }
-
-    public class MyKeyAdapter extends KeyAdapter {
-        @Override
-        public void keyPressed(KeyEvent e){
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_UP:
-                case KeyEvent.VK_W:
-                    if (2 == direcao)
-                        break;
-
-                    direcao = 1;
-                    break;
-
-                case KeyEvent.VK_DOWN:
-                case KeyEvent.VK_S:
-                    if (1 == direcao)
-                        break;
-
-                    direcao = 2;
-                    break;
-
-                case KeyEvent.VK_LEFT:
-                case KeyEvent.VK_A:
-                    if (4 == direcao)
-                        break;
-
-                    direcao = 3;
-                    break;
-
-                case KeyEvent.VK_RIGHT:
-                case KeyEvent.VK_D:
-                    if (3 == direcao)
-                        break;
-
-                    direcao = 4;
-                    break;
-            }
-        }
     }
 }
