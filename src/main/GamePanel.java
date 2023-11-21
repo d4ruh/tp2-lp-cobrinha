@@ -30,9 +30,11 @@ public class GamePanel extends JPanel implements ActionListener {
     Player player = new Player();
 
     Timer timer;
+    GameFrame gf;
 
 
-    public GamePanel(){
+    public GamePanel(GameFrame gf){
+        this.gf = gf;
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(Color.black);
         this.setFocusable(true);
@@ -80,12 +82,26 @@ public class GamePanel extends JPanel implements ActionListener {
         g.setColor(Color.red);
         g.setFont(new Font("Ink Free", Font.BOLD, 75));
         FontMetrics metrics01 = getFontMetrics(g.getFont());
-        g.drawString("Game Over!", ((SCREEN_WIDTH - metrics01.stringWidth("Game Over!"))/2), SCREEN_HEIGHT/2);
+        g.drawString("Game Over!", ((SCREEN_WIDTH - metrics01.stringWidth("Game Over!"))/2),
+                SCREEN_HEIGHT/2 - SCREEN_HEIGHT/4);
 
         g.setFont(new Font("Ink Free", Font.BOLD, 50));
         FontMetrics metrics02 = getFontMetrics(g.getFont());
         g.drawString("Pontos: " + player.pontos, (SCREEN_WIDTH - metrics02.stringWidth("Pontos: " + player.pontos))/2,
-                (SCREEN_HEIGHT + 2 * metrics02.getHeight())/2);
+                (SCREEN_HEIGHT + 2 * metrics02.getHeight())/2 - SCREEN_HEIGHT/4);
+
+        JButton bttn = new JButton("restart");
+        this.add(bttn);
+        bttn.setVisible(true);
+        bttn.setSize(new Dimension(TILE_SIZE*4, TILE_SIZE));
+        bttn.setLocation(SCREEN_WIDTH/2 - TILE_SIZE*2, SCREEN_HEIGHT/2);
+
+        bttn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gf.restart();
+            }
+        });
     }
 
     @Override
