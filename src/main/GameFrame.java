@@ -6,7 +6,7 @@ public class GameFrame extends JFrame {
 
     public GameFrame() {
         this.add(new GamePanel(this));
-        this.setTitle("joguin");
+        this.setTitle("Cobrão Gigante");
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
