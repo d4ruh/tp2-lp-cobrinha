@@ -20,22 +20,12 @@ public class GamePanel extends JPanel implements ActionListener {
     static final int DELAY = 150;
 
 
-    int tamanhoCobra = 5;
-    final int posX[] = new int[TOTAL_GAME_TILES];
-    final int posY[] = new int[TOTAL_GAME_TILES];
-    int direcao = 2;
     boolean playing;
-    int pontos = 0;
     Apple apple = new Apple();
     Player player = new Player();
 
     Timer timer;
     GameFrame gf;
-    int gameState;
-    public final int startState=0;
-    public  final int menuState=1;
-    public final int gameOverState=2;
-    public int commandNumber=0;
 
 
     public GamePanel(GameFrame gf){
@@ -43,14 +33,13 @@ public class GamePanel extends JPanel implements ActionListener {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(Color.black);
         this.setFocusable(true);
-        this.addKeyListener(new MyKeyAdapter(player,this));
+        this.addKeyListener(new GameKeyAdapter(player,this));
         startGame();
     }
 
     public void startGame() {
         apple.newApple();
         playing = true;
-        gameState=menuState;
         timer = new Timer(DELAY, this);
         timer.start();
     }
@@ -61,76 +50,21 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void draw(Graphics g) {
-        if(gameState==menuState){
-            drawMenu(g);
+        if (playing) {
+            for (int i = 0; i < QTD_PER_ROW; i++) {
+                g.drawLine(i * TILE_SIZE, 0, i * TILE_SIZE, SCREEN_HEIGHT);
+                g.drawLine(0, i * TILE_SIZE, SCREEN_WIDTH, i * TILE_SIZE);
+            }
+            g.setColor(Color.green);
+            g.fillOval(apple.x, apple.y, TILE_SIZE, TILE_SIZE);
+            for (int i = 0; i < player.tamanho; i++) {
+                if (i == 0) g.setColor(Color.red);
+                else g.setColor(Color.blue);
+                g.fillRect(player.posX[i], player.posY[i], TILE_SIZE, TILE_SIZE);
+            }
         }
-     else if (gameState==startState) {
-         if (playing )
-            drawGame(g);
-         else
-             gameOver(g);
-      }
-
+        else        gameOver(g);
     }
-    private void drawGame(Graphics g){
-        for (int i = 0; i < QTD_PER_ROW; i++) {
-            g.drawLine(i * TILE_SIZE, 0, i * TILE_SIZE, SCREEN_HEIGHT);
-            g.drawLine(0, i * TILE_SIZE, SCREEN_WIDTH, i * TILE_SIZE);
-        }
-
-        g.setColor(Color.green);
-        g.fillOval(apple.x, apple.y, TILE_SIZE, TILE_SIZE);
-
-        for (int i = 0; i < player.tamanho; i++) {
-            if (i == 0) g.setColor(Color.red);
-            else g.setColor(Color.blue);
-
-            g.fillRect(player.posX[i], player.posY[i], TILE_SIZE, TILE_SIZE);
-        }
-    }
-    private void drawMenu(Graphics g){
-        g.setFont(new Font("Ink Free",Font.BOLD,60));
-        String tittle="Cobrão gigante";
-        FontMetrics metrics = getFontMetrics(g.getFont());
-        int x=((SCREEN_WIDTH - metrics.stringWidth(tittle))/2);
-        int y=SCREEN_HEIGHT/2 - SCREEN_HEIGHT/4;
-        //sombra
-        g.setColor(Color.gray);
-        g.drawString(tittle, x+5, y+5);
-        //titulo
-        g.setColor(Color.white);
-        g.drawString(tittle, x,y);
-
-        g.setFont(new Font("Ink Free",Font.BOLD,20));
-        String newGame="New game";
-        x=((SCREEN_WIDTH - metrics.stringWidth(newGame))/2);
-        y+=TILE_SIZE*4;
-        g.drawString(newGame, x, y);
-        if(commandNumber==0){
-            g.drawString(">", x-TILE_SIZE,y );
-        }
-
-        String login="login";
-        x=((SCREEN_WIDTH - metrics.stringWidth(login))/2);
-        y+=TILE_SIZE*2;
-        g.drawString(login, x, y);
-        if(commandNumber==1){
-            g.drawString(">", x-TILE_SIZE,y );
-        }
-
-        String quit="quit";
-        x=((SCREEN_WIDTH - metrics.stringWidth(quit))/2);
-        y+=TILE_SIZE*2;
-        g.drawString(quit, x, y);
-        if(commandNumber==2){
-            g.drawString(">", x-TILE_SIZE,y );
-        }
-
-
-
-    }
-
-
 
     public void gameOver(Graphics g) {
         g.setColor(Color.red);
@@ -144,19 +78,26 @@ public class GamePanel extends JPanel implements ActionListener {
         g.drawString("Pontos: " + player.pontos, (SCREEN_WIDTH - metrics02.stringWidth("Pontos: " + player.pontos))/2,
                 (SCREEN_HEIGHT + 2 * metrics02.getHeight())/2 - SCREEN_HEIGHT/4);
 
-        JButton bttn = new JButton("restart");
-        this.add(bttn);
-        bttn.setVisible(true);
-        bttn.setSize(new Dimension(TILE_SIZE*4, TILE_SIZE));
-        bttn.setLocation(SCREEN_WIDTH/2 - TILE_SIZE*2, SCREEN_HEIGHT/2);
+        JButton bttn0 = new JButton("restart");
+        this.add(bttn0);
+        bttn0.setVisible(true);
+        bttn0.setSize(new Dimension(TILE_SIZE*4, TILE_SIZE));
+        bttn0.setLocation(SCREEN_WIDTH/2 - TILE_SIZE*2, SCREEN_HEIGHT/2);
 
-        bttn.addActionListener(e -> gf.restart());
+        bttn0.addActionListener(e -> gf.restart(this, true));
+
+        JButton bttn1 = new JButton("quit to title");
+        this.add(bttn1);
+        bttn1.setVisible(true);
+        bttn1.setSize(new Dimension(TILE_SIZE*4, TILE_SIZE));
+        bttn1.setLocation(SCREEN_WIDTH/2 - TILE_SIZE*2, SCREEN_HEIGHT/2 + TILE_SIZE*2);
+
+        bttn1.addActionListener(e -> gf.restart(this, false));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        if (playing && gameState==startState) {
+        if (playing) {
             player.move();
             player.checkApple(apple);
             playing = player.checkColision();

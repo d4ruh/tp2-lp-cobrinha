@@ -4,8 +4,20 @@ import javax.swing.*;
 
 public class GameFrame extends JFrame {
 
-    public GameFrame() {
-        this.add(new GamePanel(this));
+    static final int DEFAULT_TILE_SIZE = 16;
+    static final int SCALE = 2;
+    static final int TILE_SIZE = DEFAULT_TILE_SIZE * SCALE;
+    static final int QTD_PER_ROW = 15;
+    static final int SCREEN_WIDTH = TILE_SIZE * QTD_PER_ROW;
+    static final int SCREEN_HEIGHT = TILE_SIZE * QTD_PER_ROW;
+    static final int TOTAL_GAME_TILES = SCREEN_HEIGHT * SCREEN_WIDTH / QTD_PER_ROW;
+
+    public GameFrame(boolean state) {
+        if (state)
+            this.add(new GamePanel(this));
+        else
+            this.add(new LoginPanel(this));
+
         this.setTitle("Cobrão Gigante");
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -15,8 +27,13 @@ public class GameFrame extends JFrame {
         this.setVisible(true);
     }
 
-    public void restart() {
-        new GameFrame();
+    public void startGame(LoginPanel lp) {
+        new GameFrame(true);
+        this.dispose();
+    }
+
+    public void restart(GamePanel gp, boolean state) {
+        new GameFrame(state);
         this.dispose();
     }
 }
