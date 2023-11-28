@@ -11,12 +11,17 @@ public class GameFrame extends JFrame {
     static final int SCREEN_WIDTH = TILE_SIZE * QTD_PER_ROW;
     static final int SCREEN_HEIGHT = TILE_SIZE * QTD_PER_ROW;
     static final int TOTAL_GAME_TILES = SCREEN_HEIGHT * SCREEN_WIDTH / QTD_PER_ROW;
+    final int playingState=0;
+    final int menuState=1;
+    final int loginState=2;
 
-    public GameFrame(boolean state) {
-        if (state)
+    public GameFrame(int state) {
+        if (state==0)
             this.add(new GamePanel(this));
-        else
-            this.add(new LoginPanel(this));
+        else if(state==1)
+            this.add(new MenuPanel(this));
+        else if(state==2)
+            this.add(new LoginPanel(this) );
 
         this.setTitle("Cobrão Gigante");
         this.setResizable(false);
@@ -27,12 +32,15 @@ public class GameFrame extends JFrame {
         this.setVisible(true);
     }
 
-    public void startGame(LoginPanel lp) {
-        new GameFrame(true);
+    public void startGame(MenuPanel mp) {
+        new GameFrame(0);
         this.dispose();
     }
-
-    public void restart(GamePanel gp, boolean state) {
+    public void changePage(int state){
+        new GameFrame(state);
+        this.dispose();
+    }
+    public void restart(GamePanel gp, int state) {
         new GameFrame(state);
         this.dispose();
     }

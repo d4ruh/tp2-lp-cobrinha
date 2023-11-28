@@ -1,38 +1,35 @@
 package main;
 
-import entity.Player;
-
-import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class LoginKeyAdapter extends KeyAdapter {
-    LoginPanel lp;
+    MenuPanel mp;
 
-    public LoginKeyAdapter(LoginPanel lp) {
-        this.lp=lp;
+    public LoginKeyAdapter(MenuPanel mp) {
+        this.mp = mp;
     }
 
     public void keyPressed(KeyEvent e){
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
             case KeyEvent.VK_W:
-                lp.commandNumber = (lp.commandNumber - 1)%3;
-                if (0 > lp.commandNumber) lp.commandNumber = 2;
+                mp.commandNumber = (mp.commandNumber - 1)%3;
+                if (0 > mp.commandNumber) mp.commandNumber = 2;
                 break;
 
             case KeyEvent.VK_DOWN:
             case KeyEvent.VK_S:
-                lp.commandNumber = (lp.commandNumber + 1)%3;
+                mp.commandNumber = (mp.commandNumber + 1)%3;
                 break;
 
             case KeyEvent.VK_ENTER:
-                switch (lp.commandNumber) {
+                switch (mp.commandNumber) {
                     case 0:
-                        lp.gf.startGame(lp);
+                        mp.gf.startGame(mp);
                         break;
                     case 1:
-                        //login
+                        mp.gf.changePage(2);
                         break;
                     case 2:
                         System.exit(0);

@@ -84,7 +84,7 @@ public class GamePanel extends JPanel implements ActionListener {
         bttn0.setSize(new Dimension(TILE_SIZE*4, TILE_SIZE));
         bttn0.setLocation(SCREEN_WIDTH/2 - TILE_SIZE*2, SCREEN_HEIGHT/2);
 
-        bttn0.addActionListener(e -> gf.restart(this, true));
+        bttn0.addActionListener(e -> gf.restart(this, 0));
 
         JButton bttn1 = new JButton("quit to title");
         this.add(bttn1);
@@ -92,7 +92,7 @@ public class GamePanel extends JPanel implements ActionListener {
         bttn1.setSize(new Dimension(TILE_SIZE*4, TILE_SIZE));
         bttn1.setLocation(SCREEN_WIDTH/2 - TILE_SIZE*2, SCREEN_HEIGHT/2 + TILE_SIZE*2);
 
-        bttn1.addActionListener(e -> gf.restart(this, false));
+        bttn1.addActionListener(e -> gf.restart(this, 1));
     }
 
     @Override
